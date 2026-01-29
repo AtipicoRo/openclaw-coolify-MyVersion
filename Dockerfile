@@ -113,10 +113,16 @@ ENV MOLT_BOT_BETA=${MOLT_BOT_BETA} \
 # Actually the install script might try to install to ~/.npm-global if not root. As root, it might install to /usr/local/bin. 
 # We'll install to a fixed path or rely on PATH.
 RUN curl -fsSL https://molt.bot/install.sh | bash && \
-    if command -v moltbot >/dev/null 2>&1; then \
-    echo "✅ moltbot binary found"; \
+    if [ -f "/root/.moltbot/bin/moltbot" ]; then \
+    echo "✅ Found moltbot in default location. Moving to /usr/local/bin to survive volume mounts..." && \
+    mv /root/.moltbot/bin/moltbot /usr/local/bin/moltbot; \
+    elif [ -f "/root/.moltbot/bin/clawdbot" ]; then \
+    echo "✅ Found clawdbot in default location. Moving to /usr/local/bin/moltbot..." && \
+    mv /root/.moltbot/bin/clawdbot /usr/local/bin/moltbot; \
+    elif command -v moltbot >/dev/null 2>&1; then \
+    echo "✅ moltbot binary found in PATH"; \
     elif command -v clawdbot >/dev/null 2>&1; then \
-    echo "🔁 clawdbot found, creating moltbot alias"; \
+    echo "🔁 clawdbot found in PATH, creating moltbot alias"; \
     ln -sf "$(command -v clawdbot)" /usr/local/bin/moltbot; \
     else \
     echo "❌ Moltbot install failed (no clawdbot or moltbot found)"; \
