@@ -11,7 +11,7 @@ if ! command -v "$OPENCLAW" >/dev/null 2>&1; then
 fi
 
 # Try multiple common keys for the request ID
-IDS=$($OPENCLAW devices list --json | jq -r '.pending[] | .requestId // .id // .request' 2>/dev/null | grep -v "null")
+IDS=$($OPENCLAW devices list --json | sed -n '/^{/,$p' | jq -r '.pending[] | .requestId // .id // .request' 2>/dev/null | grep -v "null")
 
 if [ -z "$IDS" ]; then
   echo "✅ No pending requests found."
