@@ -384,9 +384,6 @@ ln -sf "$CONFIG_FILE" "$OPENCLAW_STATE/config.json" 2>/dev/null || true
 seed_agent() {
   local id="$1"
   local name="$2"
-  local id="$1"
-  local name="$2"
-  local name="$2"
   local dir="/root/openclaw-$id"
   if [ "$id" = "main" ]; then dir="/root/openclaw-workspace"; fi
 
@@ -406,6 +403,19 @@ EOF
 
   if [ ! -f "$dir/SOUL.md" ]; then
     case "$id" in
+      main)
+        if [ -f "/root/SOUL.md" ]; then
+          echo "✨ Injecting OpenClaw SOUL into main workspace..."
+          cp "/root/SOUL.md" "$dir/SOUL.md"
+        elif [ -f "SOUL.md" ]; then
+          cp "SOUL.md" "$dir/SOUL.md"
+        else
+          cat >"$dir/SOUL.md" <<EOF
+# SOUL.md - OpenClaw
+You are OpenClaw, a helpful and premium AI assistant.
+EOF
+        fi
+        ;;
       linkding)
         cat >"$dir/SOUL.md" <<EOF
 # SOUL.md - Linkding Agent
