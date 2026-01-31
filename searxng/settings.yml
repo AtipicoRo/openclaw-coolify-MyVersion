@@ -27,3 +27,9 @@ engines:
 
   - name: brave
     disabled: true
+
+  - name: ahmia
+    disabled: true
+
+  - name: torch
+    disabled: true
